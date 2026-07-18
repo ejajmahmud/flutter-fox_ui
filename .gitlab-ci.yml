@@ -1,0 +1,39 @@
+# GitLab CI API documentation → GitLab Pages
+#
+# Trigger: manual (pipeline must be started by hand in the GitLab UI).
+# Branch:  default branch only (main).
+# Output:  https://<namespace>.gitlab.io/<project>/
+
+stages:
+  - docs
+
+variables:
+  FLUTTER_VERSION: "3.41.0"
+  # Keep the pub cache outside the project dir so it survives between jobs.
+  PUB_CACHE: "$CI_PROJECT_DIR/.pub-cache"
+
+pages:
+  stage: docs
+  image: ghcr.io/cirruslabs/flutter:$FLUTTER_VERSION
+  cache:
+    key: "pub-flutter-$FLUTTER_VERSION"
+    paths:
+      - .pub-cache/
+  script:
+    # Resolve workspace dependencies (handles the monorepo root + sub-packages).
+    - flutter pub get
+
+    # Generate API docs into public/ (GitLab Pages requires this path).
+    - dart doc --output public
+
+  artifacts:
+    paths:
+      - public
+    # Keep the last 5 published versions before GitLab purges older ones.
+    expire_in: 30 days
+
+  rules:
+    # Only offer the manual trigger on the default branch.
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+    - when: never

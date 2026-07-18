@@ -1,0 +1,50 @@
+name: fox_ui
+description: Widgets that automagically adapt to the platform for a true native look
+version: 0.1.0+1
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+
+environment:
+  sdk: ^3.11.0
+  flutter: ^3.41.0
+
+dependencies:
+  adaptive_platform_ui: ^0.1.107
+  blur: ^4.0.2
+  fluent_ui: ^4.15.1
+  flutter:
+    sdk: flutter
+  flutter_acrylic: ^1.1.4
+  macos_ui: ^2.2.2
+  mix: ^2.0.2
+  window_manager: ^0.5.1
+  yaru: ^10.1.0
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  melos: ^7.7.0
+  mocktail: ^1.0.5
+  very_good_analysis: ^10.2.0
+
+workspace:
+  - example
+  - widgetbook
+
+melos:
+  useRootAsPackage: true
+  scripts:
+    analyze: melos exec -- dart analyze . --fatal-infos
+    fix: melos exec -- dart fix --apply
+    lint: melos exec -- dart analyze . --fatal-infos --fatal-warnings
+    format: melos exec -- dart format .
+    docs: melos exec --dir-exists=lib -- "dart doc ."
+    get: melos exec --flutter --concurrency=1 -- "flutter pub get"
+    outdated: melos exec --flutter --concurrency=1 -- "flutter pub outdated"
+    upgrade: melos exec --flutter --concurrency=1 -- "flutter pub upgrade --major-versions"
+    clean: melos exec --flutter --concurrency=1 -- "flutter clean"
+    sort: melos exec --flutter --concurrency=1 -- "dart run import_order_lint:import_order"
